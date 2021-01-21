@@ -6,17 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://silencerichard.github.io/my-blog">
-  <title>Tag: 随笔 | 八哥的博客</title>
+  <title>http&amp;https | 八哥的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="热爱popping的前端">
-<meta property="og:type" content="website">
-<meta property="og:title" content="八哥的博客">
-<meta property="og:url" content="https://silencerichard.github.io/my-blog/tags/%E9%9A%8F%E7%AC%94/index.html">
+  <meta name="description" content="透彻理解http和https 参考文章 链接  网络请求篇http dns解析 建立tcp连接 发送http请求 服务器处理请求 返回响应结果 关闭tcp连接  dns解析 DNS全称 Domain Name System (域名系统)， 存储了域名和IP地址的映射  下面是一个获取www.163.com的ip地址的过程  访问本地服务器，查看dns地址是否有缓存 访问根服务器，根服务器不会存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="http&amp;https">
+<meta property="og:url" content="https://silencerichard.github.io/my-blog/2021/01/19/http&https/index.html">
 <meta property="og:site_name" content="八哥的博客">
-<meta property="og:description" content="热爱popping的前端">
+<meta property="og:description" content="透彻理解http和https 参考文章 链接  网络请求篇http dns解析 建立tcp连接 发送http请求 服务器处理请求 返回响应结果 关闭tcp连接  dns解析 DNS全称 Domain Name System (域名系统)， 存储了域名和IP地址的映射  下面是一个获取www.163.com的ip地址的过程  访问本地服务器，查看dns地址是否有缓存 访问根服务器，根服务器不会存">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/HIT-Alibaba/interview/master/img/tcp-connection-made-three-way-handshake.png">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-a0d10af45e785fe8d3f5cd12f8c309f5_1440w.jpg">
+<meta property="article:published_time" content="2021-01-19T14:00:44.000Z">
+<meta property="article:modified_time" content="2021-01-21T09:59:37.501Z">
 <meta property="article:author" content="Popping Eight">
+<meta property="article:tag" content="读书笔记">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/HIT-Alibaba/interview/master/img/tcp-connection-made-three-way-handshake.png">
   
     <link rel="alternative" href="/atom.xml" title="八哥的博客" type="application/atom+xml">
   
@@ -152,174 +158,288 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-http&amp;https" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      http&amp;https
+    </h1>
+  
+
+        
+        <a href="/my-blog/2021/01/19/http&https/" class="archive-article-date">
+  	<time datetime="2021-01-19T14:00:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-19</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>透彻理解http和https</p>
+<p><a href="https://zhuanlan.zhihu.com/p/43789231" target="_blank" rel="noopener">参考文章 链接</a></p>
+</blockquote>
+<h1 id="网络请求篇"><a href="#网络请求篇" class="headerlink" title="网络请求篇"></a>网络请求篇</h1><h2 id="http"><a href="#http" class="headerlink" title="http"></a>http</h2><ul>
+<li>dns解析</li>
+<li>建立tcp连接</li>
+<li>发送http请求</li>
+<li>服务器处理请求</li>
+<li>返回响应结果</li>
+<li>关闭tcp连接</li>
+</ul>
+<h3 id="dns解析"><a href="#dns解析" class="headerlink" title="dns解析"></a>dns解析</h3><blockquote>
+<p>DNS全称 Domain Name System (域名系统)， 存储了<code>域名和IP地址的映射</code></p>
+</blockquote>
+<p>下面是一个获取<a href="http://www.163.com的ip地址的过程" target="_blank" rel="noopener">www.163.com的ip地址的过程</a></p>
+<ol>
+<li>访问<code>本地服务器</code>，查看dns地址是否有缓存</li>
+<li>访问<code>根服务器</code>，根服务器不会存储域名和ip地址的映射关系，但会告诉你域名所属的域服务器 （如例子，请求的对象属于<code>.com</code>域服务器）</li>
+<li>访问<code>域服务器</code>，返回域名所属的解析服务器</li>
+<li>访问<code>解析服务器</code>,返回正确的ip地址</li>
+</ol>
+<p><code>TTL</code>参数，（time to live）,告诉服务器ip地址在本地缓存生效的时间，加速用户访问</p>
+<h3 id="tcp连接"><a href="#tcp连接" class="headerlink" title="tcp连接"></a>tcp连接</h3><blockquote>
+<p>tcp的连接建立，连接关闭，都是通过<code>请求</code>、<code>响应</code>完成的</p>
+</blockquote>
+<ul>
+<li><p>TCP的标记</p>
+<blockquote>
+<p>tcp层的flag字段有以下标示</p>
+</blockquote>
+<ul>
+<li>SYN 建立连接</li>
+<li>FYN 关闭连接</li>
+<li>ACK 表示响应</li>
+<li>PSH 表示有DATA数据传输，</li>
+<li>RST 表示连接重置。</li>
+</ul>
+</li>
+<li><p>三次握手</p>
+<p>第一次握手：client <code>(SYN=1, seq=x)</code></p>
+<p>主机A发送位码为<code>SYN=1</code>,并随机产生一个序列号<code>sequence number</code> = 1234xxx, 主机B由SYN=1知道，主机A要<code>建立连接</code></p>
+<p>第二次握手：server <code>(ACK=1, ACKnumber=x+1, seq=y)</code></p>
+<p>主机B收到消息后，向主机A发送<code>ack number</code> = seq + 1, SYN=1, <code>ACK</code>=1, 并随机产生一个<code>seq</code> = 5678</p>
+<p>第三次握手：client <code>ACKnumber = y + 1, ACK=1</code></p>
+<p>主机A收到消息后，检查<code>ack number</code>是否正确，以及<code>ACK</code>是否为1，若正确，再次发送<code>ack number</code> = (主机B的seq + 1), <code>ACK</code> =1, 主机B确认seq与ack=1，建立连接</p>
+<p><code>三次握手</code><br><img src="https://raw.githubusercontent.com/HIT-Alibaba/interview/master/img/tcp-connection-made-three-way-handshake.png" alt=""></p>
+<ul>
+<li>四次挥手</li>
+</ul>
+<p>第一次挥手<code>(FIN=1，seq=x)</code></p>
+<p>假设客户端想要关闭连接，客户端发送一个 FIN 标志位置为1的包，表示自己已经没有数据可以发送了，但是仍然可以接受数据。</p>
+<p>发送完毕后，客户端进入 FIN_WAIT_1 状态。</p>
+<p>第二次挥手<code>(ACK=1，ACKnum=x+1)</code></p>
+<p>服务器端确认客户端的 FIN 包，发送一个确认包，表明自己接受到了客户端关闭连接的请求，但还没有准备好关闭连接。</p>
+<p>发送完毕后，服务器端进入 CLOSE_WAIT 状态，客户端接收到这个确认包之后，进入 FIN_WAIT_2 状态，等待服务器端关闭连接。</p>
+<p>第三次挥手<code>(FIN=1，seq=y)</code></p>
+<p>服务器端准备好关闭连接时，向客户端发送结束连接请求，FIN 置为1。</p>
+<p>发送完毕后，服务器端进入 LAST_ACK 状态，等待来自客户端的最后一个ACK。</p>
+<p>第四次挥手<code>(ACK=1，ACKnum=y+1)</code></p>
+<p>客户端接收到来自服务器端的关闭请求，发送一个确认包，并进入 TIME_WAIT状态，等待可能出现的要求重传的 ACK 包。</p>
+<p>服务器端接收到这个确认包之后，关闭连接，进入 CLOSED 状态。</p>
+<p>客户端等待了某个固定时间（两个最大段生命周期，2MSL，2 Maximum Segment Lifetime）之后，没有收到服务器端的 ACK ，认为服务器端已经正常关闭连接，于是自己也关闭连接，进入 CLOSED 状态。</p>
+</li>
+</ul>
+<h2 id="https"><a href="#https" class="headerlink" title="https"></a>https</h2><ul>
+<li><p>握手过程</p>
+<ol>
+<li>第一次握手，客户端给出协议版本号，生成的随机码<code>client random</code>，支持的加密方式</li>
+<li>服务器确认双方使用的加密方法，并给出数字证书，以及一串服务端生成的随机码<code>server random</code></li>
+<li>客户端确认数字证书有效，并生成一个新的随机数<code>Premaster secret</code>,然后根据数字证书的公钥加密这串随机数</li>
+<li>服务端使用自己的私钥，获取浏览器发来的随机数<code>Premaster secret</code>.</li>
+<li>客户端和服务器根据约定的加密方法，使用前面的三个随机数<code>client random</code>, <code>server random</code>,<code>Premaster secret</code>,生成对话密钥<code>session key</code>, 用来加密接下来的对话过程</li>
+</ol>
+</li>
+<li><p>对称加密</p>
+<p>有一个密钥，可以加密对话的内容，加密的内容只能用它才能解密。和日常生活中钥匙的上锁和解锁类似</p>
+<ul>
+<li><p>用对称加密安全吗</p>
+<p>如果对话双方都持有同一密钥，且不被第三者知晓，这个过程是安全的，对称加密的弊端在于<code>密钥传输过程中会被劫持</code></p>
+<p>当然如果一个客户端能够预存所有server的密钥，且确保不被外人知晓，这个过程是安全的。</p>
+</li>
+</ul>
+</li>
+<li><p>非对称加密</p>
+<p>有两把密钥，通常一把叫<code>公钥</code>，一把叫<code>私钥</code>，用公钥加密的内容必须用私钥才能解开，同样的，用私钥加密的内容只有公钥才能解开。</p>
+<p>一组公钥私钥，可以保证<code>单个方向</code>传输的安全性</p>
+<ul>
+<li><p>为什么https没有采用纯对称加密的方式传输？</p>
+<p>因为每次非对称加密算法的计算非常耗时，特别是加密一些较大数据的时候有些力不从心。</p>
+</li>
+</ul>
+</li>
+<li><p>非对称加密 + 对称加密</p>
+<ol>
+<li>某服务器拥有非对称加密的公钥A,私钥A</li>
+<li>浏览器请求服务器，服务器把公钥A明文传输给浏览器</li>
+<li>浏览器随机生成一个对称加密的密钥x,用公钥A加密</li>
+<li>服务器拿到后用私钥A解密得到密钥x</li>
+<li>这样双方都拥有密钥x，且别人无法知道它。之后双方的所有数据用密钥x加密解密。</li>
+</ol>
+</li>
+<li><p>中间人攻击</p>
+<ol>
+<li>某服务器拥有非对称加密的公钥A,私钥A</li>
+<li>浏览器请求服务器，服务器把公钥A明文传输给浏览器</li>
+<li>中间人劫持公钥A，保存下来，把数据包中的公钥A替换为自己伪造的公钥B (中间人有公钥B,对应的有私钥B)</li>
+<li>浏览器生成一个密钥x，用公钥B加密传输</li>
+<li>中间人劫持后用私钥B解密得到密钥X,再用公钥A加密后传给服务器</li>
+<li>服务器拿到后用私钥A解密得到密钥X</li>
+</ol>
+<p>根本原因： <strong>浏览器无法确认收到的公钥是不是网站自己的</strong></p>
+<ul>
+<li>数字证书</li>
+</ul>
+<ol>
+<li>服务器在使用https之前，需要向<code>CA机构</code>申请颁发一份数字证书，数字证书里有证书持有者，证书持有者的公钥等信息</li>
+<li>服务器将证书传输给浏览器，浏览器从证书里取公钥</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-a0d10af45e785fe8d3f5cd12f8c309f5_1440w.jpg" alt="ssl握手过程"></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>小伙伴们常来玩儿呀<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/my-blog/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/my-blog/2020/02/19/%E5%86%99%E4%BB%A3%E7%A0%81%E5%90%8E%E7%9A%84%E9%9A%8F%E7%AC%94/" class="archive-article-date">
-  	<time datetime="2020-02-18T16:40:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/my-blog/2020/02/19/%E5%86%99%E4%BB%A3%E7%A0%81%E5%90%8E%E7%9A%84%E9%9A%8F%E7%AC%94/">写代码后的随笔</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://silencerichard.github.io/my-blog/2021/01/19/http&https/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/my-blog/2020/01/27/%E4%BB%96%E6%98%AF%E8%BF%99%E4%B8%AA%E4%B8%96%E7%95%8C%E6%B0%B8%E8%BF%9C%E7%9A%84%E7%A5%9E/" class="archive-article-date">
-  	<time datetime="2020-01-27T03:04:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-27</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/my-blog/2020/12/28/%E6%80%8E%E6%A0%B7%E5%AD%A6%E4%B9%A0React%E6%BA%90%E7%A0%81/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">怎样学习React源码</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/my-blog/2020/01/27/%E4%BB%96%E6%98%AF%E8%BF%99%E4%B8%AA%E4%B8%96%E7%95%8C%E6%B0%B8%E8%BF%9C%E7%9A%84%E7%A5%9E/">他是这个世界永远的神</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/my-blog/2020/01/25/%E4%B8%8D%E5%B9%B3%E5%87%A1%E7%9A%84%E4%B8%80%E5%B9%B4/" class="archive-article-date">
-  	<time datetime="2020-01-25T10:33:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/my-blog/2020/01/25/%E4%B8%8D%E5%B9%B3%E5%87%A1%E7%9A%84%E4%B8%80%E5%B9%B4/">不平凡的一年</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/my-blog/2020/01/22/%E6%88%91%E7%9A%84%E5%89%8D%E7%AB%AF%E4%B9%8B%E8%B7%AF/" class="archive-article-date">
-  	<time datetime="2020-01-22T06:00:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/my-blog/2020/01/22/%E6%88%91%E7%9A%84%E5%89%8D%E7%AB%AF%E4%B9%8B%E8%B7%AF/">我的前端之路</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -342,9 +462,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,

@@ -154,6 +154,314 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-http&amp;https" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/my-blog/2021/01/19/http&https/">http&amp;https</a>
+    </h1>
+  
+
+        
+        <a href="/my-blog/2021/01/19/http&https/" class="archive-article-date">
+  	<time datetime="2021-01-19T14:00:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>透彻理解http和https</p>
+<p><a href="https://zhuanlan.zhihu.com/p/43789231" target="_blank" rel="noopener">参考文章 链接</a></p>
+</blockquote>
+<h1 id="网络请求篇"><a href="#网络请求篇" class="headerlink" title="网络请求篇"></a>网络请求篇</h1><h2 id="http"><a href="#http" class="headerlink" title="http"></a>http</h2><ul>
+<li>dns解析</li>
+<li>建立tcp连接</li>
+<li>发送http请求</li>
+<li>服务器处理请求</li>
+<li>返回响应结果</li>
+<li>关闭tcp连接</li>
+</ul>
+<h3 id="dns解析"><a href="#dns解析" class="headerlink" title="dns解析"></a>dns解析</h3><blockquote>
+<p>DNS全称 Domain Name System (域名系统)， 存储了<code>域名和IP地址的映射</code></p>
+</blockquote>
+<p>下面是一个获取<a href="http://www.163.com的ip地址的过程" target="_blank" rel="noopener">www.163.com的ip地址的过程</a></p>
+<ol>
+<li>访问<code>本地服务器</code>，查看dns地址是否有缓存</li>
+<li>访问<code>根服务器</code>，根服务器不会存储域名和ip地址的映射关系，但会告诉你域名所属的域服务器 （如例子，请求的对象属于<code>.com</code>域服务器）</li>
+<li>访问<code>域服务器</code>，返回域名所属的解析服务器</li>
+<li>访问<code>解析服务器</code>,返回正确的ip地址</li>
+</ol>
+<p><code>TTL</code>参数，（time to live）,告诉服务器ip地址在本地缓存生效的时间，加速用户访问</p>
+<h3 id="tcp连接"><a href="#tcp连接" class="headerlink" title="tcp连接"></a>tcp连接</h3><blockquote>
+<p>tcp的连接建立，连接关闭，都是通过<code>请求</code>、<code>响应</code>完成的</p>
+</blockquote>
+<ul>
+<li><p>TCP的标记</p>
+<blockquote>
+<p>tcp层的flag字段有以下标示</p>
+</blockquote>
+<ul>
+<li>SYN 建立连接</li>
+<li>FYN 关闭连接</li>
+<li>ACK 表示响应</li>
+<li>PSH 表示有DATA数据传输，</li>
+<li>RST 表示连接重置。</li>
+</ul>
+</li>
+<li><p>三次握手</p>
+<p>第一次握手：client <code>(SYN=1, seq=x)</code></p>
+<p>主机A发送位码为<code>SYN=1</code>,并随机产生一个序列号<code>sequence number</code> = 1234xxx, 主机B由SYN=1知道，主机A要<code>建立连接</code></p>
+<p>第二次握手：server <code>(ACK=1, ACKnumber=x+1, seq=y)</code></p>
+<p>主机B收到消息后，向主机A发送<code>ack number</code> = seq + 1, SYN=1, <code>ACK</code>=1, 并随机产生一个<code>seq</code> = 5678</p>
+<p>第三次握手：client <code>ACKnumber = y + 1, ACK=1</code></p>
+<p>主机A收到消息后，检查<code>ack number</code>是否正确，以及<code>ACK</code>是否为1，若正确，再次发送<code>ack number</code> = (主机B的seq + 1), <code>ACK</code> =1, 主机B确认seq与ack=1，建立连接</p>
+<p><code>三次握手</code><br><img src="https://raw.githubusercontent.com/HIT-Alibaba/interview/master/img/tcp-connection-made-three-way-handshake.png" alt=""></p>
+<ul>
+<li>四次挥手</li>
+</ul>
+<p>第一次挥手<code>(FIN=1，seq=x)</code></p>
+<p>假设客户端想要关闭连接，客户端发送一个 FIN 标志位置为1的包，表示自己已经没有数据可以发送了，但是仍然可以接受数据。</p>
+<p>发送完毕后，客户端进入 FIN_WAIT_1 状态。</p>
+<p>第二次挥手<code>(ACK=1，ACKnum=x+1)</code></p>
+<p>服务器端确认客户端的 FIN 包，发送一个确认包，表明自己接受到了客户端关闭连接的请求，但还没有准备好关闭连接。</p>
+<p>发送完毕后，服务器端进入 CLOSE_WAIT 状态，客户端接收到这个确认包之后，进入 FIN_WAIT_2 状态，等待服务器端关闭连接。</p>
+<p>第三次挥手<code>(FIN=1，seq=y)</code></p>
+<p>服务器端准备好关闭连接时，向客户端发送结束连接请求，FIN 置为1。</p>
+<p>发送完毕后，服务器端进入 LAST_ACK 状态，等待来自客户端的最后一个ACK。</p>
+<p>第四次挥手<code>(ACK=1，ACKnum=y+1)</code></p>
+<p>客户端接收到来自服务器端的关闭请求，发送一个确认包，并进入 TIME_WAIT状态，等待可能出现的要求重传的 ACK 包。</p>
+<p>服务器端接收到这个确认包之后，关闭连接，进入 CLOSED 状态。</p>
+<p>客户端等待了某个固定时间（两个最大段生命周期，2MSL，2 Maximum Segment Lifetime）之后，没有收到服务器端的 ACK ，认为服务器端已经正常关闭连接，于是自己也关闭连接，进入 CLOSED 状态。</p>
+</li>
+</ul>
+<h2 id="https"><a href="#https" class="headerlink" title="https"></a>https</h2><ul>
+<li><p>握手过程</p>
+<ol>
+<li>第一次握手，客户端给出协议版本号，生成的随机码<code>client random</code>，支持的加密方式</li>
+<li>服务器确认双方使用的加密方法，并给出数字证书，以及一串服务端生成的随机码<code>server random</code></li>
+<li>客户端确认数字证书有效，并生成一个新的随机数<code>Premaster secret</code>,然后根据数字证书的公钥加密这串随机数</li>
+<li>服务端使用自己的私钥，获取浏览器发来的随机数<code>Premaster secret</code>.</li>
+<li>客户端和服务器根据约定的加密方法，使用前面的三个随机数<code>client random</code>, <code>server random</code>,<code>Premaster secret</code>,生成对话密钥<code>session key</code>, 用来加密接下来的对话过程</li>
+</ol>
+</li>
+<li><p>对称加密</p>
+<p>有一个密钥，可以加密对话的内容，加密的内容只能用它才能解密。和日常生活中钥匙的上锁和解锁类似</p>
+<ul>
+<li><p>用对称加密安全吗</p>
+<p>如果对话双方都持有同一密钥，且不被第三者知晓，这个过程是安全的，对称加密的弊端在于<code>密钥传输过程中会被劫持</code></p>
+<p>当然如果一个客户端能够预存所有server的密钥，且确保不被外人知晓，这个过程是安全的。</p>
+</li>
+</ul>
+</li>
+<li><p>非对称加密</p>
+<p>有两把密钥，通常一把叫<code>公钥</code>，一把叫<code>私钥</code>，用公钥加密的内容必须用私钥才能解开，同样的，用私钥加密的内容只有公钥才能解开。</p>
+<p>一组公钥私钥，可以保证<code>单个方向</code>传输的安全性</p>
+<ul>
+<li><p>为什么https没有采用纯对称加密的方式传输？</p>
+<p>因为每次非对称加密算法的计算非常耗时，特别是加密一些较大数据的时候有些力不从心。</p>
+</li>
+</ul>
+</li>
+<li><p>非对称加密 + 对称加密</p>
+<ol>
+<li>某服务器拥有非对称加密的公钥A,私钥A</li>
+<li>浏览器请求服务器，服务器把公钥A明文传输给浏览器</li>
+<li>浏览器随机生成一个对称加密的密钥x,用公钥A加密</li>
+<li>服务器拿到后用私钥A解密得到密钥x</li>
+<li>这样双方都拥有密钥x，且别人无法知道它。之后双方的所有数据用密钥x加密解密。</li>
+</ol>
+</li>
+<li><p>中间人攻击</p>
+<ol>
+<li>某服务器拥有非对称加密的公钥A,私钥A</li>
+<li>浏览器请求服务器，服务器把公钥A明文传输给浏览器</li>
+<li>中间人劫持公钥A，保存下来，把数据包中的公钥A替换为自己伪造的公钥B (中间人有公钥B,对应的有私钥B)</li>
+<li>浏览器生成一个密钥x，用公钥B加密传输</li>
+<li>中间人劫持后用私钥B解密得到密钥X,再用公钥A加密后传给服务器</li>
+<li>服务器拿到后用私钥A解密得到密钥X</li>
+</ol>
+<p>根本原因： <strong>浏览器无法确认收到的公钥是不是网站自己的</strong></p>
+<ul>
+<li>数字证书</li>
+</ul>
+<ol>
+<li>服务器在使用https之前，需要向<code>CA机构</code>申请颁发一份数字证书，数字证书里有证书持有者，证书持有者的公钥等信息</li>
+<li>服务器将证书传输给浏览器，浏览器从证书里取公钥</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-a0d10af45e785fe8d3f5cd12f8c309f5_1440w.jpg" alt="ssl握手过程"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/my-blog/2021/01/19/http&https/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-怎样学习React源码" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/my-blog/2020/12/28/%E6%80%8E%E6%A0%B7%E5%AD%A6%E4%B9%A0React%E6%BA%90%E7%A0%81/">怎样学习React源码</a>
+    </h1>
+  
+
+        
+        <a href="/my-blog/2020/12/28/%E6%80%8E%E6%A0%B7%E5%AD%A6%E4%B9%A0React%E6%BA%90%E7%A0%81/" class="archive-article-date">
+  	<time datetime="2020-12-28T12:23:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="你在第几层"><a href="#你在第几层" class="headerlink" title="你在第几层"></a>你在第几层</h2><ul>
+<li>掌握术语、基本实现思路</li>
+<li>掌握整体工作流程、局部细节</li>
+<li>掌握关键流程的细节</li>
+<li>掌握思想</li>
+<li>？</li>
+</ul>
+<h2 id="掌握思想"><a href="#掌握思想" class="headerlink" title="掌握思想"></a>掌握思想</h2><p> 推荐阅读<a href="https://pomb.us/build-your-own-react/" target="_blank" rel="noopener">build your own react</a></p>
+<p> 写出<code>mini react</code></p>
+<h2 id="整体工作流程、局部细节"><a href="#整体工作流程、局部细节" class="headerlink" title="整体工作流程、局部细节"></a>整体工作流程、局部细节</h2><ul>
+<li><p>整体流程</p>
+<p>推荐阅读<a href="">react技术揭秘</a></p>
+<ol>
+<li>schedule 调度 scheduler</li>
+<li>render 协调  reconciler</li>
+<li>commit 渲染  renderer（改变视图）</li>
+</ol>
+</li>
+<li><p>局部细节</p>
+<ol>
+<li>diff算法</li>
+<li>hook</li>
+</ol>
+</li>
+</ul>
+<h2 id="掌握关键流程的细节"><a href="#掌握关键流程的细节" class="headerlink" title="掌握关键流程的细节"></a>掌握关键流程的细节</h2><blockquote>
+<p>探索前端的边界</p>
+</blockquote>
+<ol>
+<li>scheduler 调度 小顶堆</li>
+<li>reconciler - fiber dfs</li>
+<li>renderer</li>
+</ol>
+<h2 id="掌握思想-1"><a href="#掌握思想-1" class="headerlink" title="掌握思想"></a>掌握思想</h2><blockquote>
+<p>践行代数效应</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">react</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/my-blog/2020/12/28/%E6%80%8E%E6%A0%B7%E5%AD%A6%E4%B9%A0React%E6%BA%90%E7%A0%81/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Promise的实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1081,170 +1389,6 @@
 
 
   
-    <article id="post-前端工程化学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/my-blog/2020/02/05/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">前端工程化学习记录</a>
-    </h1>
-  
-
-        
-        <a href="/my-blog/2020/02/05/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="archive-article-date">
-  	<time datetime="2020-02-05T08:45:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>前端工程化备案，以后再搭项目时可以参考这篇博文</p>
-</blockquote>
-<h2 id="前端工程化清单"><a href="#前端工程化清单" class="headerlink" title="前端工程化清单"></a>前端工程化清单</h2><blockquote>
-<p>据说中高级前端必备的知识就是熟练掌握工程化，为了向大佬看齐，打算认真整这篇博文，以下是这篇文章的技能清单</p>
-</blockquote>
-<ol>
-<li>自定义你的create-react-app</li>
-<li>玩转webpack配置</li>
-<li>nginx,部署你的前端项目</li>
-</ol>
-<h3 id="定制你的create-react-app"><a href="#定制你的create-react-app" class="headerlink" title="定制你的create-react-app"></a>定制你的create-react-app</h3>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">工程化</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/my-blog/2020/02/05/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-阿里云服务器的使用记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/my-blog/2020/01/31/%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/">阿里云服务器的使用记录</a>
-    </h1>
-  
-
-        
-        <a href="/my-blog/2020/01/31/%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/" class="archive-article-date">
-  	<time datetime="2020-01-31T05:48:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>为了有一个自己的服务器和网址，又开始瞎B折腾，<strong>不会折腾的前端不是一个好前端</strong></p>
-</blockquote>
-<h1 id="域名注册及绑定"><a href="#域名注册及绑定" class="headerlink" title="域名注册及绑定"></a>域名注册及绑定</h1><p>阿里云 -&gt; 域名控制台 -&gt; 选择实例 -&gt; 解析-&gt; 添加如下两条记录，记录值为ip地址<br><img src="http://q4yq5ua0b.bkt.clouddn.com/2020.1.31-%E5%8D%9A%E5%AE%A2%E6%88%AA%E5%9B%BE.png?e=1580491470&token=-ZkhumxQW_seX2oboQVjR2zNHOKo1K3qc-s5yx7r:M3mW0u5JPDK6LEQSJSwSZpS_gTE=" alt="img"></p>
-<h1 id="证书申请及下载"><a href="#证书申请及下载" class="headerlink" title="证书申请及下载"></a>证书申请及下载</h1><p>阿里云申请证书后， 选择nginx下载,<br>scp 命令复制证书及key文件至远程服务器</p>
-<h1 id="HTTPS服务端nginx配置"><a href="#HTTPS服务端nginx配置" class="headerlink" title="HTTPS服务端nginx配置"></a>HTTPS服务端nginx配置</h1><p><a href="https://www.jianshu.com/p/6257769491d0" target="_blank" rel="noopener">参考博文</a></p>
-<p>nginx主要配置如下</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###</span></span><br><span class="line"><span class="comment"># HTTPS server configuration</span></span><br><span class="line"><span class="comment">###</span></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">  <span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">443</span> ssl;</span><br><span class="line">    <span class="attribute">server_name</span>  your_domain_name;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl</span>                <span class="literal">on</span>;</span><br><span class="line">    <span class="comment">#证书和密钥存放地址</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span>      /etc/nginx/server.crt;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span>  /etc/nginx/server.key;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_session_timeout</span>  <span class="number">5m</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#    ssl_protocols  SSLv2 SSLv3 TLSv1;</span></span><br><span class="line"><span class="comment">#    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;</span></span><br><span class="line"><span class="comment">#    ssl_prefer_server_ciphers   on;</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="comment">#root   html;</span></span><br><span class="line">        <span class="comment">#index  testssl.html index.html index.htm;</span></span><br><span class="line">     <span class="attribute">proxy_redirect</span> <span class="literal">off</span>;</span><br><span class="line">     <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">     <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">     <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">     <span class="comment">#这里将https直接代理到对应的http地址</span></span><br><span class="line">     <span class="attribute">proxy_pass</span> http://IP地址;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">踩坑</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/my-blog/2020/01/31/%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/my-blog/page/2/">2</a><a class="extend next" rel="next" href="/my-blog/page/2/">Next &amp;raquo;</a>
@@ -1259,7 +1403,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 Popping Eight
+    		&copy; 2021 Popping Eight
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1371,6 +1515,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">手撕代码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">react</a>
               </li>
             
             <div class="clearfix"></div>
