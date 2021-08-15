@@ -6,20 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://silencerichard.github.io/my-blog">
-  <title>Redux学习记录 | 八哥的博客</title>
+  <title>webpack打包优化实战-UMI篇 | 八哥的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="参考博文 Redux 中文文档  什么时候使用 Redux 你有相当大量的、随时间变化的数据 你的 state 需要有一个单一可靠数据来源 你觉得把所有 state 放在最顶层组件中已经无法满足需求了  依赖123yarn add reduxyarn add react-reduxyarn add redux-devtools -D  要点四个关键词： store, state, action,">
+  <meta name="description" content="今天来做一个比较小的打包优化 参考博文链接  【掘金】webpack打包优化 脚手架： umi  打包分析常用打包工具为webpack-bundle-analyzer,可以看到项目中使用的所有依赖，也可以直观的看到项目中各模块在整个项目的占比 打包后有三个属性：  stat 实际体积 parsed 解析体积 gziped 压缩体积  umi中自带了该插件，在package.json的script">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redux学习记录">
-<meta property="og:url" content="https://silencerichard.github.io/my-blog/2020/04/02/Redux%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:title" content="webpack打包优化实战-UMI篇">
+<meta property="og:url" content="https://silencerichard.github.io/my-blog/2021/02/26/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98-UMI%E7%AF%87/index.html">
 <meta property="og:site_name" content="八哥的博客">
-<meta property="og:description" content="参考博文 Redux 中文文档  什么时候使用 Redux 你有相当大量的、随时间变化的数据 你的 state 需要有一个单一可靠数据来源 你觉得把所有 state 放在最顶层组件中已经无法满足需求了  依赖123yarn add reduxyarn add react-reduxyarn add redux-devtools -D  要点四个关键词： store, state, action,">
+<meta property="og:description" content="今天来做一个比较小的打包优化 参考博文链接  【掘金】webpack打包优化 脚手架： umi  打包分析常用打包工具为webpack-bundle-analyzer,可以看到项目中使用的所有依赖，也可以直观的看到项目中各模块在整个项目的占比 打包后有三个属性：  stat 实际体积 parsed 解析体积 gziped 压缩体积  umi中自带了该插件，在package.json的script">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-04-02T06:38:54.000Z">
-<meta property="article:modified_time" content="2020-12-27T08:03:08.156Z">
+<meta property="og:image" content="https://silencerichard.github.io/my-blog/source/images/webpack/beforebuild.jpg">
+<meta property="og:image" content="https://silencerichard.github.io/my-blog/source/images/webpack/build1.jpg">
+<meta property="article:published_time" content="2021-02-26T15:34:30.000Z">
+<meta property="article:modified_time" content="2021-02-26T16:29:05.295Z">
 <meta property="article:author" content="Popping Eight">
-<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="webpack">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silencerichard.github.io/my-blog/source/images/webpack/beforebuild.jpg">
   
     <link rel="alternative" href="/atom.xml" title="八哥的博客" type="application/atom+xml">
   
@@ -155,20 +158,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Redux学习记录" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-webpack打包优化实战-UMI篇" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Redux学习记录
+      webpack打包优化实战-UMI篇
     </h1>
   
 
         
-        <a href="/my-blog/2020/04/02/Redux%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="archive-article-date">
-  	<time datetime="2020-04-02T06:38:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-02</time>
+        <a href="/my-blog/2021/02/26/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98-UMI%E7%AF%87/" class="archive-article-date">
+  	<time datetime="2021-02-26T15:34:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-02-26</time>
 </a>
         
       </header>
@@ -176,51 +179,30 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>参考博文 <a href="https://cn.redux.js.org/" target="_blank" rel="noopener">Redux 中文文档</a></p>
+<p>今天来做一个比较小的打包优化</p>
+<p>参考博文链接  <a href="https://juejin.cn/post/6844903619158867982" target="_blank" rel="noopener">【掘金】webpack打包优化</a></p>
+<p>脚手架： umi</p>
 </blockquote>
-<h1 id="什么时候使用-Redux"><a href="#什么时候使用-Redux" class="headerlink" title="什么时候使用 Redux"></a>什么时候使用 Redux</h1><ul>
-<li>你有相当大量的、随时间变化的数据</li>
-<li>你的 state 需要有一个单一可靠数据来源</li>
-<li>你觉得把所有 state 放在最顶层组件中已经无法满足需求了</li>
-</ul>
-<h1 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yarn add redux</span><br><span class="line">yarn add react-redux</span><br><span class="line">yarn add redux-devtools -D</span><br></pre></td></tr></table></figure>
-
-<h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><p>四个关键词： <strong>store, state, action, reducers</strong></p>
-<p>所有状态（state）存储在一个单一的仓库里 (store)，利用 action 触发改变 state</p>
+<h2 id="打包分析"><a href="#打包分析" class="headerlink" title="打包分析"></a>打包分析</h2><p>常用打包工具为<code>webpack-bundle-analyzer</code>,可以看到项目中使用的所有依赖，也可以直观的看到项目中各模块在整个项目的占比</p>
+<p>打包后有三个属性：</p>
 <ul>
-<li>action 一个普通的 javascript 对象</li>
+<li>stat 实际体积</li>
+<li>parsed 解析体积</li>
+<li>gziped 压缩体积</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// action 示例</span></span><br><span class="line">&#123; <span class="attr">type</span>: <span class="string">'ADD_TODO'</span>, <span class="attr">text</span>: <span class="string">'Go to swimming pool'</span> &#125;</span><br><span class="line">&#123; <span class="attr">type</span>: <span class="string">'TOGGLE_TODO'</span>, <span class="attr">index</span>: <span class="number">1</span> &#125;</span><br><span class="line">&#123; <span class="attr">type</span>: <span class="string">'SET_VISIBILITY_FILTER'</span>, <span class="attr">filter</span>: <span class="string">'SHOW_ALL'</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>umi中自带了该插件，在<code>package.json</code>的<code>script</code>项添加指令</p>
+<p><code>&quot;analyz&quot;: &quot;ANALYZE=1 umi build&quot;,</code></p>
+<p>再输入<code>npm run analyz</code>,可开启分析模式</p>
+<p>项目依赖分析如图<br><img src="/my-blog/source/images/webpack/beforebuild.jpg" alt=""><br>打包前体积 <code>6.99MB</code></p>
+<h2 id="提取公共模块"><a href="#提取公共模块" class="headerlink" title="提取公共模块"></a>提取公共模块</h2><p>通常我们会使用到一个webpack自带的插件<code>CommonsChunkPlugin</code>,在umi里同样也集成了</p>
+<p>umi中的配置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">chainWebpack: <span class="function"><span class="keyword">function</span> (<span class="params">config, &#123; webpack &#125;</span>) </span>&#123;</span><br><span class="line">    config.merge(&#123;</span><br><span class="line">      optimization: &#123;</span><br><span class="line">        splitChunks: &#123;</span><br><span class="line">          chunks: <span class="string">'all'</span>,</span><br><span class="line">          minSize: <span class="number">30000</span>,</span><br><span class="line">          minChunks: <span class="number">2</span>,</span><br><span class="line">          automaticNameDelimiter: <span class="string">'.'</span>,</span><br><span class="line">          cacheGroups: &#123;</span><br><span class="line">            vendor: &#123;</span><br><span class="line">              name: <span class="string">'vendors'</span>,</span><br><span class="line">              test(&#123; resource &#125;) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="regexp">/[\\/]node_modules[\\/]/</span>.test(resource);</span><br><span class="line">              &#125;,</span><br><span class="line">              priority: <span class="number">10</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>为了描述 action 如何改变 state , 需要编写 reducers</li>
-</ul>
-<h1 id="三大原则"><a href="#三大原则" class="headerlink" title="三大原则"></a>三大原则</h1><ul>
-<li><h2 id="单一数据源"><a href="#单一数据源" class="headerlink" title="单一数据源"></a>单一数据源</h2></li>
-<li><h2 id="STATE-只读"><a href="#STATE-只读" class="headerlink" title="STATE 只读"></a>STATE 只读</h2></li>
-</ul>
-<p>唯一改变 state 的方法是触发 action,对 state 的所有修改都是集中化，顺序化的</p>
-<ul>
-<li><h2 id="使用纯函数执行修改"><a href="#使用纯函数执行修改" class="headerlink" title="使用纯函数执行修改"></a>使用纯函数执行修改</h2></li>
-</ul>
-<p>与 flux 不同，redux 依赖纯函数替代事件处理器（无 dispatcher 概念），redux 设想你永远不会变动你的数据</p>
-<h1 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h1><blockquote>
-<p>Action 是把数据从应用（译者注：这里之所以不叫 view 是因为这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。它是 store 数据的唯一来源。一般来说你会通过 store.dispatch() 将 action 传到 store。</p>
-</blockquote>
-<ol>
-<li><p>我们约定，action 内必须使用一个字符串类型的 type 字段来表示将要执行的动作,通常 type 为字符串类型</p>
-</li>
-<li><p>action 创建函数</p>
-<p>使 action 更具通用性</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addTodo</span>(<span class="params">text</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    type: ADD_TODO,</span><br><span class="line">    text</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>redux 把 action 创建函数的结果传给 dispatch()方法即可发起一次 dispatch 过程</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dispatch(addTodo(text))</span><br><span class="line">dispatch(completeTodo(index))</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">"redux"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这是一个 reducer，形式为 (state, action) =&gt; state 的纯函数。</span></span><br><span class="line"><span class="comment"> * 描述了 action 如何把 state 转变成下一个 state。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * state 的形式取决于你，可以是基本类型、数组、对象、</span></span><br><span class="line"><span class="comment"> * 甚至是 Immutable.js 生成的数据结构。惟一的要点是</span></span><br><span class="line"><span class="comment"> * 当 state 变化时需要返回全新的对象，而不是修改传入的参数。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 下面例子使用 `switch` 语句和字符串来做判断，但你可以写帮助类(helper)</span></span><br><span class="line"><span class="comment"> * 根据不同的约定（如方法映射）来判断，只要适用你的项目即可。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">counter</span>(<span class="params">state = <span class="number">0</span>, action</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"INCREMENT"</span>:</span><br><span class="line">      <span class="keyword">return</span> state + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"DECREMENT"</span>:</span><br><span class="line">      <span class="keyword">return</span> state - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">return</span> state;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建 Redux store 来存放应用的状态。</span></span><br><span class="line"><span class="comment">// API 是 &#123; subscribe, dispatch, getState &#125;。</span></span><br><span class="line"><span class="keyword">let</span> store = createStore(counter);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以手动订阅更新，也可以事件绑定到视图层。</span></span><br><span class="line">store.subscribe(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(store.getState()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 改变内部 state 惟一方法是 dispatch 一个 action。</span></span><br><span class="line"><span class="comment">// action 可以被序列化，用日记记录和储存下来，后期还可以以回放的方式执行</span></span><br><span class="line">store.dispatch(&#123; <span class="attr">type</span>: <span class="string">"INCREMENT"</span> &#125;);</span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line">store.dispatch(&#123; <span class="attr">type</span>: <span class="string">"INCREMENT"</span> &#125;);</span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line">store.dispatch(&#123; <span class="attr">type</span>: <span class="string">"DECREMENT"</span> &#125;);</span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
-
+<p>优化后的效果，parsed包总体积<code>4.42MB</code>，减少36.7%</p>
+<p><img src="/my-blog/source/images/webpack/build1.jpg" alt=""></p>
+<h2 id="配置externals"><a href="#配置externals" class="headerlink" title="配置externals"></a>配置externals</h2><p>externals翻译为外部依赖，对于一些大尺寸的图表库等依赖，可以尝试通过externals的配置引入相关umd文件，减少编译消耗</p>
+<p>在分析中发现<code>@antv/g6</code>库占用体积较大，于是将其变为外部依赖引入</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">externals: &#123;</span><br><span class="line">   <span class="string">'@antv/g6'</span>: <span class="string">'window.G6'</span>,</span><br><span class="line"> &#125;,</span><br><span class="line"></span><br><span class="line"> <span class="comment">// 引入被 external 库的 scripts</span></span><br><span class="line"> <span class="comment">// 区分 development 和 production，使用不同的产物</span></span><br><span class="line"> scripts: process.env.NODE_ENV === <span class="string">'development'</span> ? [</span><br><span class="line">   <span class="string">'https://gw.alipayobjects.com/os/lib/antv/g6/4.1.7/dist/g6.min.js'</span>,</span><br><span class="line"> ] : [</span><br><span class="line">     <span class="string">'https://gw.alipayobjects.com/os/lib/antv/g6/4.1.7/dist/g6.min.js'</span>,</span><br><span class="line">   ],</span><br></pre></td></tr></table></figure>
       
 
       
@@ -254,7 +236,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">webpack</a>
         		</li>
       		
 		</ul>
@@ -310,7 +292,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://silencerichard.github.io/my-blog/2020/04/02/Redux%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://silencerichard.github.io/my-blog/2021/02/26/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98-UMI%E7%AF%87/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -324,18 +306,9 @@
   
 <nav id="article-nav">
   
-    <a href="/my-blog/2020/06/10/react%E9%A1%B9%E7%9B%AE%E7%9A%84ts%E8%BF%81%E7%A7%BB/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          react项目的ts迁移
-        
-      </div>
-    </a>
   
-  
-    <a href="/my-blog/2020/02/19/%E5%86%99%E4%BB%A3%E7%A0%81%E5%90%8E%E7%9A%84%E9%9A%8F%E7%AC%94/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">写代码后的随笔</div>
+    <a href="/my-blog/2021/01/19/http&https/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">http&amp;https</div>
       <i class="icon-circle-right"></i>
     </a>
   

@@ -154,6 +154,103 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-webpack打包优化实战-UMI篇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/my-blog/2021/02/26/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98-UMI%E7%AF%87/">webpack打包优化实战-UMI篇</a>
+    </h1>
+  
+
+        
+        <a href="/my-blog/2021/02/26/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98-UMI%E7%AF%87/" class="archive-article-date">
+  	<time datetime="2021-02-26T15:34:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-02-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>今天来做一个比较小的打包优化</p>
+<p>参考博文链接  <a href="https://juejin.cn/post/6844903619158867982" target="_blank" rel="noopener">【掘金】webpack打包优化</a></p>
+<p>脚手架： umi</p>
+</blockquote>
+<h2 id="打包分析"><a href="#打包分析" class="headerlink" title="打包分析"></a>打包分析</h2><p>常用打包工具为<code>webpack-bundle-analyzer</code>,可以看到项目中使用的所有依赖，也可以直观的看到项目中各模块在整个项目的占比</p>
+<p>打包后有三个属性：</p>
+<ul>
+<li>stat 实际体积</li>
+<li>parsed 解析体积</li>
+<li>gziped 压缩体积</li>
+</ul>
+<p>umi中自带了该插件，在<code>package.json</code>的<code>script</code>项添加指令</p>
+<p><code>&quot;analyz&quot;: &quot;ANALYZE=1 umi build&quot;,</code></p>
+<p>再输入<code>npm run analyz</code>,可开启分析模式</p>
+<p>项目依赖分析如图<br><img src="/my-blog/source/images/webpack/beforebuild.jpg" alt=""><br>打包前体积 <code>6.99MB</code></p>
+<h2 id="提取公共模块"><a href="#提取公共模块" class="headerlink" title="提取公共模块"></a>提取公共模块</h2><p>通常我们会使用到一个webpack自带的插件<code>CommonsChunkPlugin</code>,在umi里同样也集成了</p>
+<p>umi中的配置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">chainWebpack: <span class="function"><span class="keyword">function</span> (<span class="params">config, &#123; webpack &#125;</span>) </span>&#123;</span><br><span class="line">    config.merge(&#123;</span><br><span class="line">      optimization: &#123;</span><br><span class="line">        splitChunks: &#123;</span><br><span class="line">          chunks: <span class="string">'all'</span>,</span><br><span class="line">          minSize: <span class="number">30000</span>,</span><br><span class="line">          minChunks: <span class="number">2</span>,</span><br><span class="line">          automaticNameDelimiter: <span class="string">'.'</span>,</span><br><span class="line">          cacheGroups: &#123;</span><br><span class="line">            vendor: &#123;</span><br><span class="line">              name: <span class="string">'vendors'</span>,</span><br><span class="line">              test(&#123; resource &#125;) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="regexp">/[\\/]node_modules[\\/]/</span>.test(resource);</span><br><span class="line">              &#125;,</span><br><span class="line">              priority: <span class="number">10</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>优化后的效果，parsed包总体积<code>4.42MB</code>，减少36.7%</p>
+<p><img src="/my-blog/source/images/webpack/build1.jpg" alt=""></p>
+<h2 id="配置externals"><a href="#配置externals" class="headerlink" title="配置externals"></a>配置externals</h2><p>externals翻译为外部依赖，对于一些大尺寸的图表库等依赖，可以尝试通过externals的配置引入相关umd文件，减少编译消耗</p>
+<p>在分析中发现<code>@antv/g6</code>库占用体积较大，于是将其变为外部依赖引入</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">externals: &#123;</span><br><span class="line">   <span class="string">'@antv/g6'</span>: <span class="string">'window.G6'</span>,</span><br><span class="line"> &#125;,</span><br><span class="line"></span><br><span class="line"> <span class="comment">// 引入被 external 库的 scripts</span></span><br><span class="line"> <span class="comment">// 区分 development 和 production，使用不同的产物</span></span><br><span class="line"> scripts: process.env.NODE_ENV === <span class="string">'development'</span> ? [</span><br><span class="line">   <span class="string">'https://gw.alipayobjects.com/os/lib/antv/g6/4.1.7/dist/g6.min.js'</span>,</span><br><span class="line"> ] : [</span><br><span class="line">     <span class="string">'https://gw.alipayobjects.com/os/lib/antv/g6/4.1.7/dist/g6.min.js'</span>,</span><br><span class="line">   ],</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">webpack</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/my-blog/2021/02/26/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98-UMI%E7%AF%87/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-http&amp;https" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -985,7 +1082,7 @@
 <li>浏览器实践</li>
 <li>前端综合应用</li>
 </ol>
-<p><img src="../images/frontend/%E5%89%8D%E7%AB%AF%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1.jpg" alt="前端知识图谱"></p>
+<p><img src="/images/frontend/%E5%89%8D%E7%AB%AF%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1.jpg" alt="前端知识图谱"></p>
 </li>
 </ul>
 
@@ -1314,81 +1411,6 @@
 
 
   
-    <article id="post-写代码后的随笔" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/my-blog/2020/02/19/%E5%86%99%E4%BB%A3%E7%A0%81%E5%90%8E%E7%9A%84%E9%9A%8F%E7%AC%94/">写代码后的随笔</a>
-    </h1>
-  
-
-        
-        <a href="/my-blog/2020/02/19/%E5%86%99%E4%BB%A3%E7%A0%81%E5%90%8E%E7%9A%84%E9%9A%8F%E7%AC%94/" class="archive-article-date">
-  	<time datetime="2020-02-18T16:40:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="气气气"><a href="#气气气" class="headerlink" title="气气气"></a>气气气</h1><p>我今天写代码时犯了一个挺傻逼的错误，总结出一条规律</p>
-<p>当遇到一个百度，谷歌，stackoverflow都不好使的问题时，<strong>先去洗个脸</strong></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/my-blog/2020/02/19/%E5%86%99%E4%BB%A3%E7%A0%81%E5%90%8E%E7%9A%84%E9%9A%8F%E7%AC%94/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/my-blog/page/2/">2</a><a class="extend next" rel="next" href="/my-blog/page/2/">Next &amp;raquo;</a>
@@ -1490,6 +1512,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">工作</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">踩坑</a>
               </li>
              
@@ -1498,7 +1524,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">工作</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1506,19 +1536,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">工程化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">手撕代码</a>
+                <a href="javascript:void(0)" class="js-tag color1">react</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">react</a>
+                <a href="javascript:void(0)" class="js-tag color5">手撕代码</a>
               </li>
             
             <div class="clearfix"></div>
