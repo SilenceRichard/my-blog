@@ -154,6 +154,124 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Redux学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/my-blog/2020/04/02/Redux%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">Redux学习记录</a>
+    </h1>
+  
+
+        
+        <a href="/my-blog/2020/04/02/Redux%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="archive-article-date">
+  	<time datetime="2020-04-02T06:38:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>参考博文 <a href="https://cn.redux.js.org/" target="_blank" rel="noopener">Redux 中文文档</a></p>
+</blockquote>
+<h1 id="什么时候使用-Redux"><a href="#什么时候使用-Redux" class="headerlink" title="什么时候使用 Redux"></a>什么时候使用 Redux</h1><ul>
+<li>你有相当大量的、随时间变化的数据</li>
+<li>你的 state 需要有一个单一可靠数据来源</li>
+<li>你觉得把所有 state 放在最顶层组件中已经无法满足需求了</li>
+</ul>
+<h1 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yarn add redux</span><br><span class="line">yarn add react-redux</span><br><span class="line">yarn add redux-devtools -D</span><br></pre></td></tr></table></figure>
+
+<h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><p>四个关键词： <strong>store, state, action, reducers</strong></p>
+<p>所有状态（state）存储在一个单一的仓库里 (store)，利用 action 触发改变 state</p>
+<ul>
+<li>action 一个普通的 javascript 对象</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// action 示例</span></span><br><span class="line">&#123; <span class="attr">type</span>: <span class="string">'ADD_TODO'</span>, <span class="attr">text</span>: <span class="string">'Go to swimming pool'</span> &#125;</span><br><span class="line">&#123; <span class="attr">type</span>: <span class="string">'TOGGLE_TODO'</span>, <span class="attr">index</span>: <span class="number">1</span> &#125;</span><br><span class="line">&#123; <span class="attr">type</span>: <span class="string">'SET_VISIBILITY_FILTER'</span>, <span class="attr">filter</span>: <span class="string">'SHOW_ALL'</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>为了描述 action 如何改变 state , 需要编写 reducers</li>
+</ul>
+<h1 id="三大原则"><a href="#三大原则" class="headerlink" title="三大原则"></a>三大原则</h1><ul>
+<li><h2 id="单一数据源"><a href="#单一数据源" class="headerlink" title="单一数据源"></a>单一数据源</h2></li>
+<li><h2 id="STATE-只读"><a href="#STATE-只读" class="headerlink" title="STATE 只读"></a>STATE 只读</h2></li>
+</ul>
+<p>唯一改变 state 的方法是触发 action,对 state 的所有修改都是集中化，顺序化的</p>
+<ul>
+<li><h2 id="使用纯函数执行修改"><a href="#使用纯函数执行修改" class="headerlink" title="使用纯函数执行修改"></a>使用纯函数执行修改</h2></li>
+</ul>
+<p>与 flux 不同，redux 依赖纯函数替代事件处理器（无 dispatcher 概念），redux 设想你永远不会变动你的数据</p>
+<h1 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h1><blockquote>
+<p>Action 是把数据从应用（译者注：这里之所以不叫 view 是因为这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。它是 store 数据的唯一来源。一般来说你会通过 store.dispatch() 将 action 传到 store。</p>
+</blockquote>
+<ol>
+<li><p>我们约定，action 内必须使用一个字符串类型的 type 字段来表示将要执行的动作,通常 type 为字符串类型</p>
+</li>
+<li><p>action 创建函数</p>
+<p>使 action 更具通用性</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addTodo</span>(<span class="params">text</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    type: ADD_TODO,</span><br><span class="line">    text</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>redux 把 action 创建函数的结果传给 dispatch()方法即可发起一次 dispatch 过程</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dispatch(addTodo(text))</span><br><span class="line">dispatch(completeTodo(index))</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">"redux"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这是一个 reducer，形式为 (state, action) =&gt; state 的纯函数。</span></span><br><span class="line"><span class="comment"> * 描述了 action 如何把 state 转变成下一个 state。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * state 的形式取决于你，可以是基本类型、数组、对象、</span></span><br><span class="line"><span class="comment"> * 甚至是 Immutable.js 生成的数据结构。惟一的要点是</span></span><br><span class="line"><span class="comment"> * 当 state 变化时需要返回全新的对象，而不是修改传入的参数。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 下面例子使用 `switch` 语句和字符串来做判断，但你可以写帮助类(helper)</span></span><br><span class="line"><span class="comment"> * 根据不同的约定（如方法映射）来判断，只要适用你的项目即可。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">counter</span>(<span class="params">state = <span class="number">0</span>, action</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"INCREMENT"</span>:</span><br><span class="line">      <span class="keyword">return</span> state + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"DECREMENT"</span>:</span><br><span class="line">      <span class="keyword">return</span> state - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">return</span> state;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建 Redux store 来存放应用的状态。</span></span><br><span class="line"><span class="comment">// API 是 &#123; subscribe, dispatch, getState &#125;。</span></span><br><span class="line"><span class="keyword">let</span> store = createStore(counter);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以手动订阅更新，也可以事件绑定到视图层。</span></span><br><span class="line">store.subscribe(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(store.getState()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 改变内部 state 惟一方法是 dispatch 一个 action。</span></span><br><span class="line"><span class="comment">// action 可以被序列化，用日记记录和储存下来，后期还可以以回放的方式执行</span></span><br><span class="line">store.dispatch(&#123; <span class="attr">type</span>: <span class="string">"INCREMENT"</span> &#125;);</span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line">store.dispatch(&#123; <span class="attr">type</span>: <span class="string">"INCREMENT"</span> &#125;);</span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line">store.dispatch(&#123; <span class="attr">type</span>: <span class="string">"DECREMENT"</span> &#125;);</span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/my-blog/2020/04/02/Redux%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-写代码后的随笔" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1162,109 +1280,9 @@
 
 
   
-    <article id="post-我的前端之路" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/my-blog/2020/01/22/%E6%88%91%E7%9A%84%E5%89%8D%E7%AB%AF%E4%B9%8B%E8%B7%AF/">我的前端之路</a>
-    </h1>
-  
-
-        
-        <a href="/my-blog/2020/01/22/%E6%88%91%E7%9A%84%E5%89%8D%E7%AB%AF%E4%B9%8B%E8%B7%AF/" class="archive-article-date">
-  	<time datetime="2020-01-22T06:00:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p><strong>八哥</strong> <em>do something interesting</em><br><br>&nbsp;&nbsp;写这篇文时，我终于成为了一枚专职前端，这一年半走过来，有过辛酸，但更多的是那种苦尽甘来的小小成就感。这篇文章是为了记录这一路走过来的经历，非常感谢这一路遇到的帮助过我的人，如果我以后小有所成，再看看这篇文章时，_别忘记那段时间对技术充满无限求知欲自己和给予我帮助的贵人_，祝自己早日成为大佬</p>
-</blockquote>
-<h2 id="考研失意"><a href="#考研失意" class="headerlink" title="考研失意"></a>考研失意</h2><p>准确来说，我不是一个”<em>职业</em>“的程序员，大学本科专业是电子科学与技术，可终究对硬件不太感冒，所以那四年也没好好读书</p>
-<p>在大学时也没什么目标，没什么理想，那时听家里人说研究生还算吃香，索性就准备考研吧，随随便便地准备了半年，考了个令人非常失望的分数，自然也就没书读了，也就面临着二战和工作的抉择</p>
-<blockquote>
-<p>大学可不能像我一样随随便便读</p>
-</blockquote>
-<h2 id="二战，不存在的"><a href="#二战，不存在的" class="headerlink" title="二战，不存在的"></a>二战，不存在的</h2><p>在毕业调查求职意向时，李导跟我说：_“二战是座独木桥，不如试试出来工作，而且<strong>互联网公司，看重能力要大于学历</strong>”_，非常感谢他那时的点拨，让我少走了一年甚至几年的”弯路“，当然这个弯路是要打引号的，对于我而言这是条弯路，因为我那时终究不是读书的料，不能静下心来看几个小时的书.</p>
-<blockquote>
-<p>北邮的<strong>研究生还是很香的</strong>!!</p>
-</blockquote>
-<p>于是我选择去找工作，我的专业技能实在太菜，但实在感谢<strong>母亲大人的培养</strong>，小学报过编程班，有一点程序员的底子，大学唯一一门满分的课是 C 语言，好吧，这辈子是逃不过程序员的命了，冲鸭！</p>
-<h2 id="毕业设计，与前端结缘"><a href="#毕业设计，与前端结缘" class="headerlink" title="毕业设计，与前端结缘"></a>毕业设计，与前端结缘</h2><p>我的毕设，是要做一个基于微信公众号的网页，它是开启我前端之旅的钥匙。师姐那时给了我一份代码，一个网址(W3CSchool),我就边学着 HTML/CSS/JavaScript,边阅读着代码，对前端有了一个比较初步的概念</p>
-<blockquote>
-<p>这里还要感谢一下我的师姐，人很漂亮又有耐心 😄 还要感谢我的基友蔚杭，给了我很多毕设的帮助，如果早点跟他在北邮的微软社混，或许我的路会走得更轻松一点</p>
-</blockquote>
-<h2 id="起点"><a href="#起点" class="headerlink" title="起点"></a>起点</h2><p>在春招时只投了一家小公司，那时想只要有口饭吃就不错了，加上这家给的待遇还算丰厚，所以就这么误打误撞上错了车。</p>
-<p>我的第一份工作，是在驻场外包到广电总局，做<em>web 开发</em>，顾名思义，web 开发的全部流程，忽略设计环节，我都有经历过。</p>
-<p>这份工作，对外宣传好像有点排面，在国家机构上班，程序员，直到半年后我才知道，<em>做外包的程序员，是业内鄙视的末端</em></p>
-<p>“卑微”二字还是挺契合我的第一份工作的，加最多的班，拿为数不多的工资，非常真实</p>
-<blockquote>
-<p>校招不谨慎，工作两行泪</p>
-</blockquote>
-<h2 id="机遇"><a href="#机遇" class="headerlink" title="机遇"></a>机遇</h2><p>在小公司的那段日子，虽然很辛苦，但还是学到了不少东西，那时我受一个同事的影响很大，人很亲切，会解答我的很多疑问，记得他说过一句话：<strong>程序员最受用的三个字就是–试一试</strong>，因为有这三个字，我在阅读那些陌生文档，使用一些新的工具时，也没有这么惧怕</p>
-<blockquote>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/my-blog/2020/01/22/%E6%88%91%E7%9A%84%E5%89%8D%E7%AB%AF%E4%B9%8B%E8%B7%AF/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/my-blog/">&amp;laquo; Prev</a><a class="page-number" href="/my-blog/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/my-blog/">&amp;laquo; Prev</a><a class="page-number" href="/my-blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/my-blog/page/3/">3</a><a class="extend next" rel="next" href="/my-blog/page/3/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1396,6 +1414,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">手撕代码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">你不知道的javascript</a>
               </li>
             
             <div class="clearfix"></div>
